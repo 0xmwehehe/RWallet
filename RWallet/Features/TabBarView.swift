@@ -31,7 +31,7 @@ struct TabBarView: View {
         TabView {
             TabSection("Assets") {
                 Tab("Tokens", systemImage: "chart.pie") {
-                    Text("portofolio")
+                    TokenListView()
                 }
                 Tab("Defi", systemImage: "chart.pie") {
                     Text("portofolio")

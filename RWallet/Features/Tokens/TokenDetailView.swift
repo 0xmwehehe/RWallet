@@ -1,0 +1,301 @@
+//
+//  TokenDetailView.swift
+//  RWallet
+//
+//  Created by Rendi  on 24/12/25.
+//
+
+import SwiftUI
+import Charts
+
+struct TokenDetailView: View {
+    let token: TokenModel
+    @State private var selectedTimeframe: Timeframe = .oneDay
+    @State private var transactions: [TransactionModel2] = []
+    
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
+    enum Timeframe: String, CaseIterable {
+        case oneDay = "1D"
+        case oneWeek = "1W"
+        case oneMonth = "1M"
+        case oneYear = "1Y"
+    }
+    
+    var filteredHistory: [PricePoint] {
+        let now = Date()
+        switch selectedTimeframe {
+        case .oneDay:
+            return token.priceHistory.filter { Calendar.current.isDate($0.date, inSameDayAs: now) }
+        case .oneWeek:
+            return token.priceHistory.filter { $0.date >= Calendar.current.date(byAdding: .day, value: -7, to: now)! }
+        case .oneMonth:
+            return token.priceHistory.filter { $0.date >= Calendar.current.date(byAdding: .month, value: -1, to: now)! }
+        case .oneYear:
+            return token.priceHistory.filter { $0.date >= Calendar.current.date(byAdding: .year, value: -1, to: now)! }
+        }
+    }
+    
+    var body: some View {
+        Group {
+            if horizontalSizeClass == .compact {
+                // iPhone → List
+                BaseDetailView{
+                    VStack {
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: 20) {
+                                headerSection
+                                balanceRow
+                                usdRow
+                                infoRow
+                                transactionSection
+                            }
+                            .padding()
+                        }
+                        .onAppear { loadDummyTransactions() }
+                        HStack {
+                            Button {
+                                // transfer
+                            } label: {
+                                HStack {
+                                    Image(systemName: "paperplane")
+                                    Text("Send")
+                                }
+                                .padding(.horizontal)
+                                .padding(.vertical, 8)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(Color.green)
+                            Button {
+                                // Swap
+                            } label: {
+                                HStack {
+                                    Image(systemName: "arrow.left.arrow.right")
+                                    Text("Swap")
+                                }
+                                .padding(.horizontal)
+                                .padding(.vertical, 8)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.blue)
+                            Button {
+                                // more
+                            } label: {
+                                HStack {
+                                    Image(systemName: "ellipsis")
+                                        .frame(height: 18)
+                                }
+                                .padding(.horizontal)
+                                .padding(.vertical, 8)
+                            }
+                            .buttonStyle(.bordered)
+                        }
+                        .padding([.horizontal])
+                    }
+                }
+                .navigationTitle(token.name)
+            } else {
+                // iPad → ScrollView
+                VStack(alignment: .trailing) {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 20) {
+                            headerSection
+                            balanceRow
+                            usdRow
+                            infoRow
+                            transactionSection
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    
+                    .onAppear { loadDummyTransactions() }
+                }
+                .toolbar {
+                    ToolbarItemGroup(placement: .topBarTrailing) {
+                        Button {
+                            
+                        } label: {
+                            Label("Send", systemImage: "paperplane")
+                        }
+                        
+                        Button {
+                            
+                        } label: {
+                            Label("Swap", systemImage: "arrow.left.arrow.right")
+                        }
+                        Button {
+                            
+                        } label: {
+                            Label("Receive", systemImage: "arrow.down.to.line.compact")
+                        }
+                        Button {
+                            
+                        } label: {
+                            Label("Bridge", systemImage: "arrow.up.arrow.down")
+                        }
+                    }
+                }
+            }
+        }
+//        .background(Color(uiColor: .secondarySystemBackground))
+    }
+    
+    // MARK: Sections
+    private var headerSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if horizontalSizeClass != .compact {
+                Text(token.name).font(.largeTitle).bold()
+                Text(token.symbol).font(.title2).foregroundColor(.secondary)
+            }
+            
+            Picker("Timeframe", selection: $selectedTimeframe) {
+                ForEach(Timeframe.allCases, id: \.self) { timeframe in
+                    Text(timeframe.rawValue).tag(timeframe)
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            
+            Chart {
+                ForEach(filteredHistory) { point in
+                    LineMark(
+                        x: .value("Date", point.date),
+                        y: .value("Price", point.price)
+                    )
+                    .foregroundStyle(token.change24h >= 0 ? .green : .red)
+                }
+            }
+            .frame(height: 200)
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(Color(uiColor: .systemGroupedBackground))
+            )
+        }
+    }
+    
+    private var balanceRow: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("My Balance")
+            HStack {
+                Image(systemName: "bitcoinsign.circle")
+                    .frame(width:30)
+                Text("\(token.balance, specifier: "%.2f") \(token.symbol)")
+                    .font(.headline)
+                Spacer()
+                Text("\(token.balance * 100, specifier: "%.2f")")
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color(uiColor: .systemGroupedBackground))
+        )
+    }
+    
+    private var infoRow: some View {
+        VStack(spacing:15){
+            HStack {
+                Text("Token Name:").font(.headline)
+                Spacer()
+                Text("\(token.name)")
+            }
+            HStack {
+                Text("Chain:").font(.headline)
+                Spacer()
+                Text("\(token.name)")
+            }
+            HStack {
+                Text("Contract Address:").font(.headline)
+                Spacer()
+                HStack{
+                    Text("0x9fdb...3463")
+                    Image(systemName: "arrow.up.forward.app")
+                    Image(systemName: "document.on.document")
+                }
+            }
+            HStack {
+                Text("FDV:").font(.headline)
+                Spacer()
+                Text("$ 1837.92B")
+                    .fontWeight(.bold)
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color(uiColor: .systemGroupedBackground))
+        )
+    }
+    
+    private var usdRow: some View {
+        HStack {
+            Text("Issuer’s Website:").font(.headline)
+            Spacer()
+            Button {
+                
+            } label: {
+                HStack{
+                    Text("Momo.xyz")
+                    Image(systemName: "arrow.up.forward.app")
+                }
+            }
+            .buttonStyle(.bordered)
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color(uiColor: .systemGroupedBackground))
+        )
+    }
+    
+    private var transactionSection: some View {
+        VStack(alignment: .leading) {
+            Text("Transactions").font(.headline)
+            
+            ForEach(transactions) { tx in
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(tx.type)
+                        Text(tx.date, style: .date)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing) {
+                        Text("\(tx.amount, specifier: "%.4f") \(token.symbol)")
+                        Text("$\(tx.usdValue, specifier: "%.2f")")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .padding(.vertical, 4)
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color(uiColor: .systemGroupedBackground))
+        )
+    }
+    
+    private func loadDummyTransactions() {
+        transactions = [
+            TransactionModel2(date: Date().addingTimeInterval(-3600), type: "Buy", amount: 0.5, usdValue: 100),
+            TransactionModel2(date: Date().addingTimeInterval(-7200), type: "Sell", amount: 0.2, usdValue: 40),
+            TransactionModel2(date: Date().addingTimeInterval(-86400), type: "Buy", amount: 1.0, usdValue: 200)
+        ]
+    }
+}
+
+
+#Preview {
+    let history = (0..<30).map { i in
+        PricePoint(date: Calendar.current.date(byAdding: .day, value: -i, to: Date())!, price: Double.random(in: 90...110))
+    }
+    let token = TokenModel(name: "Ethereum", symbol: "ETH", balance: 2.5, priceUSD: 120, change24h: 5.0, priceHistory: history)
+    NavigationStack{
+        TokenDetailView(token: token)
+    }
+//    ContentView()
+}
