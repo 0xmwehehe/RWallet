@@ -29,25 +29,15 @@ struct TransactionsListView: View {
     let transactions: [TransactionModel]
 
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 12) {
-                ForEach(transactions.groupedByDate, id: \.0) { section in
-                    VStack(alignment: .leading, spacing: 8) {
-
-                        Text(section.0)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .padding(.horizontal)
-
-                        ForEach(section.1) { tx in
-                            TransactionRow(tx: tx)
-                        }
+        List {
+            ForEach(transactions.groupedByDate, id: \.0) { section in
+                Section(section.0) {
+                    ForEach(section.1) { tx in
+                        TransactionRow(tx: tx)
                     }
                 }
             }
-            .padding()
         }
-        .background(Color(.systemGroupedBackground))
     }
 }
 
@@ -66,9 +56,7 @@ struct TransactionRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-
             icon
-
             VStack(alignment: .leading, spacing: 6) {
 
                 // Action
@@ -90,9 +78,7 @@ struct TransactionRow: View {
 //                    .foregroundStyle(detail.color)
 //                }
             }
-
             Spacer()
-
             // Gas fee
             VStack(alignment: .trailing, spacing: 4) {
                 Text("Gas")
@@ -103,11 +89,6 @@ struct TransactionRow: View {
                     .font(.footnote)
             }
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.systemBackground))
-        )
     }
 
     private var iconName: String {
