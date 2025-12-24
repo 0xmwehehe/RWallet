@@ -41,97 +41,11 @@ struct TokenDetailView: View {
             if horizontalSizeClass == .compact {
                 // iPhone → List
                 BaseDetailView{
-                    VStack {
-                        ScrollView {
-                            VStack(alignment: .leading, spacing: 20) {
-                                headerSection
-                                balanceRow
-                                usdRow
-                                infoRow
-                                transactionSection
-                            }
-                            .padding()
-                        }
-                        .onAppear { loadDummyTransactions() }
-                        HStack {
-                            Button {
-                                // transfer
-                            } label: {
-                                HStack {
-                                    Image(systemName: "paperplane")
-                                    Text("Send")
-                                }
-                                .padding(.horizontal)
-                                .padding(.vertical, 8)
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .tint(Color.green)
-                            Button {
-                                // Swap
-                            } label: {
-                                HStack {
-                                    Image(systemName: "arrow.left.arrow.right")
-                                    Text("Swap")
-                                }
-                                .padding(.horizontal)
-                                .padding(.vertical, 8)
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .tint(.blue)
-                            Button {
-                                // more
-                            } label: {
-                                HStack {
-                                    Image(systemName: "ellipsis")
-                                        .frame(height: 18)
-                                }
-                                .padding(.horizontal)
-                                .padding(.vertical, 8)
-                            }
-                            .buttonStyle(.bordered)
-                        }
-                        .padding([.horizontal])
-                    }
+                    listData
                 }
                 .navigationTitle(token.name)
             } else {
-                // iPad → ScrollView
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        headerSection
-                        balanceRow
-                        usdRow
-                        infoRow
-                        transactionSection
-                    }
-                    .padding()
-                }
-                .onAppear { loadDummyTransactions() }
-                .toolbar {
-                    ToolbarItemGroup(placement: .topBarTrailing) {
-                        Button {
-                            
-                        } label: {
-                            Label("Send", systemImage: "paperplane")
-                        }
-                        
-                        Button {
-                            
-                        } label: {
-                            Label("Swap", systemImage: "arrow.left.arrow.right")
-                        }
-                        Button {
-                            
-                        } label: {
-                            Label("Receive", systemImage: "arrow.down.to.line.compact")
-                        }
-                        Button {
-                            
-                        } label: {
-                            Label("Bridge", systemImage: "arrow.up.arrow.down")
-                        }
-                    }
-                }
+                listData
             }
         }
     }
@@ -164,8 +78,62 @@ struct TokenDetailView: View {
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(Color(uiColor: .systemGroupedBackground))
+                    .fill(Color(.secondarySystemBackground))
             )
+        }
+    }
+    
+    private var listData: some View {
+        VStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    headerSection
+                    balanceRow
+                    usdRow
+                    infoRow
+                    transactionSection
+                }
+                .padding()
+            }
+            .onAppear { loadDummyTransactions() }
+            HStack {
+                Button {
+                    // transfer
+                } label: {
+                    HStack {
+                        Image(systemName: "paperplane")
+                        Text("Send")
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(Color.green)
+                Button {
+                    // Swap
+                } label: {
+                    HStack {
+                        Image(systemName: "arrow.left.arrow.right")
+                        Text("Swap")
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.blue)
+                Button {
+                    // more
+                } label: {
+                    HStack {
+                        Image(systemName: "ellipsis")
+                            .frame(height: 18)
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                }
+                .buttonStyle(.bordered)
+            }
+            .padding([.horizontal])
         }
     }
     
@@ -184,7 +152,7 @@ struct TokenDetailView: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Color(uiColor: .systemGroupedBackground))
+                .fill(Color(.secondarySystemBackground))
         )
     }
     
@@ -219,7 +187,7 @@ struct TokenDetailView: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Color(uiColor: .systemGroupedBackground))
+                .fill(Color(.secondarySystemBackground))
         )
     }
     
@@ -240,7 +208,7 @@ struct TokenDetailView: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Color(uiColor: .systemGroupedBackground))
+                .fill(Color(.secondarySystemBackground))
         )
     }
     
@@ -270,7 +238,7 @@ struct TokenDetailView: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Color(uiColor: .systemGroupedBackground))
+                .fill(Color(.secondarySystemBackground))
         )
     }
     
@@ -288,9 +256,9 @@ struct TokenDetailView: View {
     let history = (0..<30).map { i in
         PricePoint(date: Calendar.current.date(byAdding: .day, value: -i, to: Date())!, price: Double.random(in: 90...110))
     }
-    let token = TokenModel(name: "Ethereum", symbol: "ETH", balance: 2.5, priceUSD: 120, change24h: 5.0, priceHistory: history)
-    NavigationStack{
-        TokenDetailView(token: token)
-    }
-    //    ContentView()
+    let token = TokenModel(name: "Ethereum", symbol: "ETH", image: "eth", chain: "eth", balance: 2.5, priceUSD: 1800.0, change24h: 2.1, priceHistory: [])
+//    NavigationStack{
+//        TokenDetailView(token: token)
+//    }
+    TokenListView()
 }

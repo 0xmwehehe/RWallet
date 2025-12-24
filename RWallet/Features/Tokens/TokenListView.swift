@@ -23,25 +23,27 @@ struct TokenListView: View {
     }
     
     var body: some View {
-            if sizeClass == .regular {
-                // iPad layout
-                HStack(spacing: 0) {
-                    sidebarList
-                        .frame(width: 320)
-                    detailView
-                }
-            } else {
-                // iPhone layout
-                List(filteredTokens) { token in
-                    NavigationLink(value: token) {
-                        TokenRowView(token: token)
-                            .tag(token)
-                    }
-                    .listRowSeparator(.hidden)
-                }
-                .listStyle(.plain)
+        if sizeClass == .regular {
+            // iPad layout
+            HStack(spacing: 0) {
+                sidebarList
+                    .frame(width: 320)
+                Divider()
+                    .ignoresSafeArea()
+                detailView
             }
+        } else {
+            // iPhone layout
+            List(filteredTokens) { token in
+                NavigationLink(value: token) {
+                    TokenRowView(token: token)
+                }
+                .padding(.vertical,1)
+                .listRowSeparator(.hidden)
+            }
+            .listStyle(.plain)
         }
+    }
     
     private var sidebarList: some View {
         ScrollView {
@@ -103,5 +105,5 @@ struct TokenListView: View {
 }
 
 #Preview {
-    TabBarView()
+    AssetsView()
 }

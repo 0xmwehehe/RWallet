@@ -24,7 +24,7 @@ enum MenuItem: String, CaseIterable, Identifiable, Hashable {
 }
 
 struct TabBarView: View {
-//    @AppStorage("TabBarCustomization") private var customization: TabViewCustomization
+    @AppStorage("TabBarCustomization") private var customization: TabViewCustomization
     @Environment(\.horizontalSizeClass) private var sizeClass
     
     @State var selection: MenuItem = .portfolio
@@ -32,36 +32,45 @@ struct TabBarView: View {
         TabView {
             if (sizeClass == .regular) {
                 TabSection("Assets") {
-                    Tab("Tokens", systemImage: "chart.pie") {
+                    Tab("Tokens", systemImage: "bitcoinsign.circle") {
                         TokenListView()
                     }
-                    Tab("Defi", systemImage: "chart.pie") {
+                    .customizationID("Tab.Tokens")
+                    Tab("Defi", systemImage: "cube.transparent") {
                         DefiListView()
                     }
-                    Tab("Nft", systemImage: "chart.pie") {
+                    .customizationID("Tab.Defi")
+                    Tab("Nft", systemImage: "text.below.photo") {
                         NavigationStack{
                             NFTListView()
                         }
                     }
+                    .customizationID("Tab.NFT")
                 }
                 
                 TabSection("Trade") {
-                    Tab("Swap", systemImage: "chart.pie") {
+                    Tab("Swap", systemImage: "arrow.left.arrow.right") {
                         SendView()
                     }
-                    Tab("Perps", systemImage: "chart.pie") {
+                    .customizationID("Tab.Swap")
+                    Tab("Perps", systemImage: "gamecontroller") {
                         Text("portofolio")
                     }
+                    .customizationID("Tab.Perps")
                 }
+                .customizationID("Tab.Trade")
                 
                 TabSection("Transactions") {
-                    Tab("History", systemImage: "chart.pie") {
+                    Tab("History", systemImage: "clock") {
                         TransactionView()
                     }
-                    Tab("Approvals", systemImage: "chart.pie") {
-                        Text("portofolio")
+                    .customizationID("Tab.History")
+                    Tab("Approvals", systemImage: "checkmark.shield") {
+                        ApprovalView()
                     }
+                    .customizationID("Tab.Approval")
                 }
+                .customizationID("Tab.Transactions")
             } else {
                 Tab("Rabby", systemImage: "hare" ) {
                     HomeMobileView()
@@ -74,11 +83,13 @@ struct TabBarView: View {
             Tab("Explore", systemImage: "network" ) {
                 BrowserView()
             }
+            .customizationID("Tab.Explore")
             Tab(role: .search) {
                 
             }
         }
         .tabViewStyle(.sidebarAdaptable)
+        .tabViewCustomization($customization)
     }
 }
 

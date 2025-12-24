@@ -102,7 +102,7 @@ struct HomeMobileView: View {
                         TransactionView()
                     }
                 case .approvals:
-                    Text("momo")
+                    ApprovalView()
                 case .gasAccount:
                     Text("momo")
                 case .watchlist:

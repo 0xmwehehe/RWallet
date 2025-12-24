@@ -99,6 +99,7 @@ struct PortfolioTabBar: View {
             }
         }
         .padding(.horizontal)
+        .background(Color(uiColor: .systemBackground))
     }
 }
 

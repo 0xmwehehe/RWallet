@@ -11,6 +11,8 @@ struct TokenModel: Identifiable, Hashable, Equatable {
     let id = UUID()
     let name: String
     let symbol: String
+    let image: String
+    let chain: String
     let balance: Double
     let priceUSD: Double
     let change24h: Double

@@ -51,5 +51,5 @@ struct CListView<Item: Identifiable & Equatable, Content: View>: View {
 }
 
 #Preview {
-    TabBarView()
+    AssetsView()
 }
