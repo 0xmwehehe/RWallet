@@ -6,13 +6,19 @@
 //
 
 import SwiftUI
+import WebKit
 
-struct DeFiWebView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+struct DeFiWebView: UIViewRepresentable {
+    let url: URL
+
+    func makeUIView(context: Context) -> WKWebView {
+        let config = WKWebViewConfiguration()
+        config.allowsInlineMediaPlayback = true
+        
+        let webView = WKWebView(frame: .zero, configuration: config)
+        webView.load(URLRequest(url: url))
+        return webView
     }
-}
 
-#Preview {
-    DeFiWebView()
+    func updateUIView(_ uiView: WKWebView, context: Context) {}
 }

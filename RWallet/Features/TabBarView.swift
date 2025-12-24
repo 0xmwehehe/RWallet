@@ -25,60 +25,55 @@ enum MenuItem: String, CaseIterable, Identifiable, Hashable {
 
 struct TabBarView: View {
 //    @AppStorage("TabBarCustomization") private var customization: TabViewCustomization
+    @Environment(\.horizontalSizeClass) private var sizeClass
     
     @State var selection: MenuItem = .portfolio
     var body: some View {
         TabView {
-            TabSection("Assets") {
-                Tab("Tokens", systemImage: "chart.pie") {
-                    TokenListView()
+            if (sizeClass == .regular) {
+                TabSection("Assets") {
+                    Tab("Tokens", systemImage: "chart.pie") {
+                        TokenListView()
+                    }
+                    Tab("Defi", systemImage: "chart.pie") {
+                        DefiListView()
+                    }
+                    Tab("Nft", systemImage: "chart.pie") {
+                        NavigationStack{
+                            NFTListView()
+                        }
+                    }
                 }
-                Tab("Defi", systemImage: "chart.pie") {
-                    Text("portofolio")
+                
+                TabSection("Trade") {
+                    Tab("Swap", systemImage: "chart.pie") {
+                        SendView()
+                    }
+                    Tab("Perps", systemImage: "chart.pie") {
+                        Text("portofolio")
+                    }
                 }
-                Tab("Nft", systemImage: "chart.pie") {
-                    Text("portofolio")
+                
+                TabSection("Transactions") {
+                    Tab("History", systemImage: "chart.pie") {
+                        Text("portofolio")
+                    }
+                    Tab("Approvals", systemImage: "chart.pie") {
+                        Text("portofolio")
+                    }
                 }
-            }
-            
-            TabSection("Trade") {
-                Tab("Swap", systemImage: "chart.pie") {
-                    Text("portofolio")
+            } else {
+                Tab("Rabby", systemImage: "hare" ) {
+                    HomeMobileView()
                 }
-                Tab("Perps", systemImage: "chart.pie") {
-                    Text("portofolio")
-                }
-            }
-            
-            TabSection("Transactions") {
-                Tab("History", systemImage: "chart.pie") {
-                    Text("portofolio")
-                }
-                Tab("Approvals", systemImage: "chart.pie") {
-                    Text("portofolio")
+                Tab("Assets", systemImage: "wallet.bifold" ) {
+                    AssetsView()
                 }
             }
             
             Tab("Explore", systemImage: "network" ) {
-                Text("portofolio")
+                BrowserView()
             }
-            
-//            if UIDevice.current.userInterfaceIdiom != .phone {
-//                TabSection("Account") {
-//                    Tab("0x1341..dfs", systemImage: "wallet.bifold") {
-//                        
-//                    }
-//                    
-//                    Tab("0x1341..dfs", systemImage: "wallet.bifold.fill") {
-//                        
-//                    }
-//                    
-//                    Tab("0x1341..dfs", systemImage: "wallet.bifold.fill") {
-//                        
-//                    }
-//                }
-//                .tabPlacement(.sidebarOnly)
-//            }
             Tab(role: .search) {
                 
             }
@@ -88,5 +83,6 @@ struct TabBarView: View {
 }
 
 #Preview {
+    
     TabBarView()
 }

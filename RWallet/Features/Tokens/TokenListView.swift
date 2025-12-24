@@ -23,37 +23,25 @@ struct TokenListView: View {
     }
     
     var body: some View {
-        if sizeClass == .regular {
-            NavigationStack {
+            if sizeClass == .regular {
+                // iPad layout
                 HStack(spacing: 0) {
                     sidebarList
                         .frame(width: 320)
-                        .background(Color(.systemBackground))
-                    
-                    Divider()
-                        .ignoresSafeArea()
-                    
                     detailView
-                        .frame(maxWidth: .infinity)
                 }
-            }
-        } else {
-            NavigationStack {
+            } else {
+                // iPhone layout
                 List(filteredTokens) { token in
                     NavigationLink(value: token) {
                         TokenRowView(token: token)
+                            .tag(token)
                     }
                     .listRowSeparator(.hidden)
                 }
                 .listStyle(.plain)
-                .navigationTitle("Tokens")
-                .searchable(text: $searchText)
-                .navigationDestination(for: TokenModel.self) {
-                    TokenDetailView(token: $0)
-                }
             }
         }
-    }
     
     private var sidebarList: some View {
         ScrollView {

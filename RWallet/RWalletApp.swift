@@ -11,7 +11,8 @@ import SwiftUI
 struct RWalletApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TabBarView()
+
         }
     }
 }
