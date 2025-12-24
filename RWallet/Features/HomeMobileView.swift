@@ -99,7 +99,7 @@ struct HomeMobileView: View {
                     Text("momo")
                 case .transactions:
                     BaseDetailView {
-                        Text("")
+                        TransactionView()
                     }
                 case .approvals:
                     Text("momo")

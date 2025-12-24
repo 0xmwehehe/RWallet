@@ -56,7 +56,7 @@ struct TabBarView: View {
                 
                 TabSection("Transactions") {
                     Tab("History", systemImage: "chart.pie") {
-                        Text("portofolio")
+                        TransactionView()
                     }
                     Tab("Approvals", systemImage: "chart.pie") {
                         Text("portofolio")
