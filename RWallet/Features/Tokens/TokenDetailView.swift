@@ -96,21 +96,17 @@ struct TokenDetailView: View {
                 .navigationTitle(token.name)
             } else {
                 // iPad → ScrollView
-                VStack(alignment: .trailing) {
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 20) {
-                            headerSection
-                            balanceRow
-                            usdRow
-                            infoRow
-                            transactionSection
-                        }
-                        .padding()
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        headerSection
+                        balanceRow
+                        usdRow
+                        infoRow
+                        transactionSection
                     }
-                    
-                    .onAppear { loadDummyTransactions() }
+                    .padding()
                 }
+                .onAppear { loadDummyTransactions() }
                 .toolbar {
                     ToolbarItemGroup(placement: .topBarTrailing) {
                         Button {
@@ -138,7 +134,6 @@ struct TokenDetailView: View {
                 }
             }
         }
-//        .background(Color(uiColor: .secondarySystemBackground))
     }
     
     // MARK: Sections
@@ -297,5 +292,5 @@ struct TokenDetailView: View {
     NavigationStack{
         TokenDetailView(token: token)
     }
-//    ContentView()
+    //    ContentView()
 }
