@@ -14,14 +14,14 @@ struct NFTDetailView: View {
             ScrollView {
                 VStack(alignment:.leading) {
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.blue)
+                        .fill(Color(.secondarySystemFill))
                         .aspectRatio(1, contentMode: .fit)
                         .frame(maxWidth: .infinity)
                         .overlay(
                             Text("NFT")
                                 .font(.title)
                                 .fontWeight(.bold)
-                                .foregroundColor(.white)
+                                .foregroundColor(.primary)
                         )
                     Text(token.name)
                         .font(.largeTitle)

@@ -72,7 +72,7 @@ struct NFTListView: View {
         Group {
             if isSelectable {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.blue)
+                    .fill(Color(.secondarySystemFill))
                     .aspectRatio(1, contentMode: .fit)
                     .overlay(
                         Text(item.name)
@@ -87,11 +87,11 @@ struct NFTListView: View {
             } else {
                 NavigationLink(value: item) {
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.blue)
+                        .fill(Color(.secondarySystemFill))
                         .aspectRatio(1, contentMode: .fit)
                         .overlay(
                             Text(item.name)
-                                .foregroundColor(.white)
+                                .foregroundColor(.primary)
                         )
                 }
             }

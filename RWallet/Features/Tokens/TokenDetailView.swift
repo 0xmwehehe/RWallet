@@ -11,7 +11,7 @@ import Charts
 struct TokenDetailView: View {
     let token: TokenModel
     @State private var selectedTimeframe: Timeframe = .oneDay
-    @State private var transactions: [TransactionModel2] = []
+    @State private var transactions: [TransactionModel] = TransactionModel.mock
     
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
@@ -91,11 +91,11 @@ struct TokenDetailView: View {
                     balanceRow
                     usdRow
                     infoRow
+                    Divider()
                     transactionSection
                 }
                 .padding()
             }
-            .onAppear { loadDummyTransactions() }
             HStack {
                 Button {
                     // transfer
@@ -141,8 +141,9 @@ struct TokenDetailView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("My Balance")
             HStack {
-                Image(systemName: "bitcoinsign.circle")
-                    .frame(width:30)
+                Image(token.image)
+                    .resizable()
+                    .frame(width:24, height: 24)
                 Text("\(token.balance, specifier: "%.2f") \(token.symbol)")
                     .font(.headline)
                 Spacer()
@@ -166,10 +167,14 @@ struct TokenDetailView: View {
             HStack {
                 Text("Chain:").font(.headline)
                 Spacer()
+                Image(token.chain)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20)
                 Text("\(token.name)")
             }
             HStack {
-                Text("Contract Address:").font(.headline)
+                Text("Contract:").font(.headline)
                 Spacer()
                 HStack{
                     Text("0x9fdb...3463")
@@ -213,41 +218,23 @@ struct TokenDetailView: View {
     }
     
     private var transactionSection: some View {
-        VStack(alignment: .leading) {
-            Text("Transactions").font(.headline)
-            
-            ForEach(transactions) { tx in
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(tx.type)
-                        Text(tx.date, style: .date)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    Spacer()
-                    VStack(alignment: .trailing) {
-                        Text("\(tx.amount, specifier: "%.4f") \(token.symbol)")
-                        Text("$\(tx.usdValue, specifier: "%.2f")")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+        LazyVStack(alignment: .leading, spacing: 0) {
+            Text("History")
+                .font(.title2)
+                .fontWeight(.bold)
+                .padding(.bottom)
+            ForEach(transactions.groupedByDate, id: \.0) { section in
+                Section(section.0) {
+                    ForEach(section.1) { tx in
+                        TransactionRow(tx: tx)
+                            .padding(12)
+                            .background(RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .fill(Color(.secondarySystemBackground)))
+                            .padding(.vertical, 6)
                     }
                 }
-                .padding(.vertical, 4)
             }
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Color(.secondarySystemBackground))
-        )
-    }
-    
-    private func loadDummyTransactions() {
-        transactions = [
-            TransactionModel2(date: Date().addingTimeInterval(-3600), type: "Buy", amount: 0.5, usdValue: 100),
-            TransactionModel2(date: Date().addingTimeInterval(-7200), type: "Sell", amount: 0.2, usdValue: 40),
-            TransactionModel2(date: Date().addingTimeInterval(-86400), type: "Buy", amount: 1.0, usdValue: 200)
-        ]
     }
 }
 
@@ -257,8 +244,8 @@ struct TokenDetailView: View {
         PricePoint(date: Calendar.current.date(byAdding: .day, value: -i, to: Date())!, price: Double.random(in: 90...110))
     }
     let token = TokenModel(name: "Ethereum", symbol: "ETH", image: "eth", chain: "eth", balance: 2.5, priceUSD: 1800.0, change24h: 2.1, priceHistory: [])
-//    NavigationStack{
-//        TokenDetailView(token: token)
-//    }
-    TokenListView()
+    //    NavigationStack{
+    TokenDetailView(token: token)
+    //    }
+    //    TokenListView()
 }
