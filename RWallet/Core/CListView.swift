@@ -49,7 +49,3 @@ struct CListView<Item: Identifiable & Equatable, Content: View>: View {
         }
     }
 }
-
-#Preview {
-    AssetsView()
-}

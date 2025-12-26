@@ -103,7 +103,3 @@ struct TokenListView: View {
         )
     }
 }
-
-#Preview {
-    AssetsView()
-}

@@ -7,42 +7,15 @@
 
 import SwiftUI
 
-enum PortfolioSubItem: String, CaseIterable, Identifiable, Hashable {
-    case tokens = "Tokens"
-    case defi = "DeFi"
-    case nfts = "NFTs"
-    case transactions = "Transactions"
-    case approval = "Approval"
-    
-    var id: String { rawValue }
-    
-    var title: String {
-        switch self {
-        case .tokens: return "Tokens"
-        case .defi: return "DeFi"
-        case .nfts: return "NFTs"
-        case .transactions: return "Transactions"
-        case .approval: return "Approval"
-        }
-    }
-    
-    var iconName: String {
-        switch self {
-        case .tokens: return "dollarsign.circle"
-        case .defi: return "link.circle"
-        case .nfts: return "photo.circle"
-        case .transactions: return "arrow.right.arrow.left.circle"
-        case .approval: return "checkmark.circle"
-        }
-    }
-}
-
 struct AssetsView: View {
-    @State private var selectedTab: PortfolioSubItem = .tokens
+//    @Binding var path: [WalletTab]
+    @State var selectedTab: AssetsTab = .tokens
+//
+//    let mode: AssetsViewMode
     
     var body: some View {
         NavigationStack {
-            content
+            tabbedContent
                 .navigationDestination(for: TokenModel.self) {
                     TokenDetailView(token: $0)
                 }
@@ -52,30 +25,61 @@ struct AssetsView: View {
         }
     }
     
-    private var content: some View {
-        VStack(spacing: 0) {
+//    private var content: some View {
+//        VStack(spacing: 0) {
+//            switch mode {
+//            case .tabbed:
+//                tabbedContent
+//
+//            case .single(let tab):
+//                singleContent(tab)
+//            }
+//        }
+//        .onAppear {
+//            if case .single(let tab) = mode {
+//                selectedTab = tab
+//            }
+//        }
+//    }
+    
+    private var tabbedContent: some View {
+        VStack{
             PortfolioTabBar(selectedTab: $selectedTab)
-            
             TabView(selection: $selectedTab) {
                 TokenListView()
-                    .tag(PortfolioSubItem.tokens)
+                    .tag(AssetsTab.tokens)
+                
                 DefiListView()
-                    .tag(PortfolioSubItem.defi)
+                    .tag(AssetsTab.defi)
+                
                 NFTListView()
-                    .tag(PortfolioSubItem.nfts)
+                    .tag(AssetsTab.nfts)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
         }
     }
+//
+//    @ViewBuilder
+//    private func singleContent(_ tab: AssetsTab) -> some View {
+//        switch tab {
+//        case .tokens:
+//            TokenListView()
+//
+//        case .defi:
+//            DefiListView()
+//
+//        case .nfts:
+//            NFTListView()
+//        }
+//    }
+
 }
 
 struct PortfolioTabBar: View {
-    
-    @Binding var selectedTab: PortfolioSubItem
-    
+    @Binding var selectedTab: AssetsTab
     var body: some View {
         HStack {
-            ForEach(PortfolioSubItem.allCases.prefix(3), id: \.self) { tab in
+            ForEach(AssetsTab.allCases, id: \.self) { tab in
                 Button {
                     withAnimation(.easeInOut) {
                         selectedTab = tab
@@ -83,7 +87,7 @@ struct PortfolioTabBar: View {
                 } label: {
                     VStack(spacing: 8) {
                         
-                        Text(tab.title)
+                        Text(tab.rawValue)
                             .font(.headline)
                             .foregroundColor(
                                 selectedTab == tab ? Color.accentColor : .gray
@@ -103,6 +107,6 @@ struct PortfolioTabBar: View {
     }
 }
 
-#Preview {
-    AssetsView()
-}
+//#Preview {
+//    AssetsView(selectedTab: .constant(.tokens))
+//}

@@ -67,9 +67,9 @@ struct BrowserView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 14))
                 .padding([.horizontal, .bottom])
             }
-            .onTapGesture {
-                hideKeyboard()
-            }
+//            .onTapGesture {
+//                hideKeyboard()
+//            }
 //            .navigationTitle("Browser")
             .navigationDestination(isPresented: $showWeb) {
                 if let url = currentURL {

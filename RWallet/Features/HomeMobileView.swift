@@ -14,18 +14,14 @@ struct ActionMenu: Identifiable, Hashable {
     let trailingText: String?
 }
 extension ActionMenu {
-    var route: HomeRoute {
+    var route: MenuTab {
         switch title {
         case "Swap": return .swap
         case "Send": return .send
-        case "Receive": return .receive
-        case "Bridge": return .bridge
         case "Perps": return .perps
-        case "Lending": return .lending
-        case "Transactions": return .transactions
-        case "Approvals": return .approvals
-        case "GasAccount": return .gasAccount
-        default: return .watchlist
+        case "Transactions": return .history
+        case "Approvals": return .approval
+        default: return .history
         }
     }
 }
@@ -45,6 +41,7 @@ enum HomeRoute: Hashable {
 
 
 struct HomeMobileView: View {
+    @Binding var path: [WalletTab]
     
     private let columns = [
         GridItem(.flexible(), spacing: 16),
@@ -66,48 +63,22 @@ struct HomeMobileView: View {
     ]
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ScrollView {
                 headerView
                 
                 LazyVGrid(columns: columns) {
-                    ForEach(menus) { menu in
-                        NavigationLink(value: menu.route) {
-                            ActionCard(menu: menu)
+                    ForEach(MenuTab.allCases, id:\.self) { tab in
+                        NavigationLink(value: WalletTab.menu(tab)) {
+                            ActionCard(menu: tab)
                         }
                     }
                 }
                 .padding()
             }
             .background(Color(uiColor: .secondarySystemBackground))
-            .navigationDestination(for: HomeRoute.self) { route in
-                switch route {
-                case .swap:
-                    Text("momo")
-                case .send:
-                    BaseDetailView {
-                        SendView()
-                            .navigationTitle("Send")
-                    }
-                case .receive:
-                    Text("momo")
-                case .bridge:
-                    Text("momo")
-                case .perps:
-                    Text("")
-                case .lending:
-                    Text("momo")
-                case .transactions:
-                    BaseDetailView {
-                        TransactionView()
-                    }
-                case .approvals:
-                    ApprovalView()
-                case .gasAccount:
-                    Text("momo")
-                case .watchlist:
-                    Text("momo")
-                }
+            .navigationDestination(for: WalletTab.self) { tab in
+                tab.detailTab()
             }
         }
     }
@@ -148,7 +119,7 @@ struct HomeMobileView: View {
 }
 
 struct ActionCard: View {
-    let menu: ActionMenu
+    let menu: MenuTab
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -160,11 +131,11 @@ struct ActionCard: View {
                 
                 Spacer()
                 
-                if let trailing = menu.trailingText {
-                    Text(trailing)
-                        .font(.caption)
-                        .foregroundColor(.gray)
-                }
+//                if let trailing = menu.trailingText {
+//                    Text(trailing)
+//                        .font(.caption)
+//                        .foregroundColor(.gray)
+//                }
             }
             
             Spacer()
@@ -200,6 +171,6 @@ struct ActionDetailView: View {
 }
 
 
-#Preview {
-    HomeMobileView()
-}
+//#Preview {
+//    HomeMobileView(path: .constant(.history))
+//}

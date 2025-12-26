@@ -10,7 +10,7 @@ import SwiftUI
 struct SwapView: View {
     var body: some View {
         VStack {
-            
+            Text("SwapView")
         }
     }
 }
